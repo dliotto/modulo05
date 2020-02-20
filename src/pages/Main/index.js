@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
+import Container from '../../components/Container';
 
 import api from '../../services/api';
 
-import { Container, Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List } from './styles';
 
 class Main extends Component {
     // eslint-disable-next-line react/state-in-constructor
