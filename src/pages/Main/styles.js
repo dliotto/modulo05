@@ -7,7 +7,7 @@ export const Form = styled.form`
 
     input {
         flex: 1;
-        border: 1px solid #eee;
+        border: 1px solid ${props => (props.erro ? '#ff6b6b' : '#eee')};
         padding: 10px 15px;
         border-radius: 4px;
         font-size: 16px;
@@ -68,6 +68,13 @@ export const List = styled.ul`
         }
     }
 
+    a {
+        color: #7159c1;
+        text-decoration: none;
+    }
+`;
+
+export const Remove = styled.div`
     a {
         color: #7159c1;
         text-decoration: none;

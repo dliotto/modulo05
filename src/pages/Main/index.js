@@ -6,7 +6,7 @@ import Container from '../../components/Container';
 
 import api from '../../services/api';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, Remove } from './styles';
 
 class Main extends Component {
     // eslint-disable-next-line react/state-in-constructor
@@ -14,6 +14,7 @@ class Main extends Component {
         newRepo: '',
         repositories: [],
         loading: false,
+        erro: false,
     };
 
     // Carregar os dados do localstorage
@@ -45,25 +46,40 @@ class Main extends Component {
 
         const { newRepo, repositories } = this.state;
 
-        const response = await api.get(`/repos/${newRepo}`);
+        try {
+            if (repositories.indexOf(newRepo) !== -1) {
+                const response = await api.get(`/repos/${newRepo}`);
 
-        const data = {
-            name: response.data.full_name,
-        };
+                const data = {
+                    name: response.data.full_name,
+                };
 
+                this.setState({
+                    repositories: [...repositories, data],
+                    newRepo: '',
+                });
+            } else {
+                throw new Error('Repositório duplicado');
+            }
+        } catch (error) {
+            console.log(error.message);
+            this.setState({
+                loading: false,
+                erro: true,
+            });
+        }
+    };
+
+    handleRemove = repository => {
         this.setState({
-            repositories: [...repositories, data],
-            newRepo: '',
-            loading: false,
+            repositories: this.state.repositories.filter(t => t != repository),
         });
-
-        console.log(response.data);
     };
 
     // https://api.github.com/repos/dliotto/desafio04
 
     render() {
-        const { newRepo, loading, repositories } = this.state;
+        const { newRepo, loading, repositories, erro } = this.state;
 
         return (
             <Container>
@@ -72,7 +88,7 @@ class Main extends Component {
                     Repositórios
                 </h1>
 
-                <Form onSubmit={this.handleSubmit}>
+                <Form onSubmit={this.handleSubmit} erro={erro}>
                     <input
                         type="text"
                         placeholder="Adicionar Repositório"
@@ -99,6 +115,16 @@ class Main extends Component {
                             >
                                 Detalhes
                             </Link>
+                            <Remove>
+                                <a
+                                    href=""
+                                    onClick={() =>
+                                        this.handleRemove(repository)
+                                    }
+                                >
+                                    Remover
+                                </a>
+                            </Remove>
                         </li>
                     ))}
                 </List>
